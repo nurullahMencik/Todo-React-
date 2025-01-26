@@ -3,11 +3,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   // State'ler
-  const [todos, setTodos] = useState([]); // Todo'ları tutan state
-  const [todo, setTodo] = useState(""); // Yeni todo'nun değeri
-  const [search, setSearch] = useState(""); // Arama terimi
-  const [isEditing, setIsEditing] = useState(null); // Güncellemeye başlanan todo
-  const [editValue, setEditValue] = useState(""); // Güncellenmiş todo'nun değeri
+  const [todos, setTodos] = useState([]);
+  const [todo, setTodo] = useState("");
+  const [search, setSearch] = useState("");
+  const [isEditing, setIsEditing] = useState(null);
+  const [editValue, setEditValue] = useState("");
 
   // Sayfa yüklendiğinde, localStorage'dan todoları al
   useEffect(() => {
@@ -21,23 +21,23 @@ function App() {
       alert("Todo ismi boş olamaz!");
       return;
     }
-    const newTodos = [...todos, todo]; // Yeni todo ekle
-    setTodos(newTodos); // State'i güncelle
-    setTodo(""); // Input'u temizle
-    localStorage.setItem("todos", JSON.stringify(newTodos)); // LocalStorage'a kaydet
+    const newTodos = [...todos, todo];
+    setTodos(newTodos);
+    setTodo("");
+    localStorage.setItem("todos", JSON.stringify(newTodos));
   };
 
   // Todo silme fonksiyonu
   const deleteTodo = (index) => {
-    const newTodos = todos.filter((_, i) => i !== index); // Silinen todo'yu filtrele
-    setTodos(newTodos); // State'i güncelle
-    localStorage.setItem("todos", JSON.stringify(newTodos)); // LocalStorage'ı güncelle
+    const newTodos = todos.filter((_, i) => i !== index);
+    setTodos(newTodos);
+    localStorage.setItem("todos", JSON.stringify(newTodos));
   };
 
   // Tüm todoları silme fonksiyonu
   const clearTodos = () => {
-    setTodos([]); // Tüm todoları state'ten sil
-    localStorage.removeItem("todos"); // LocalStorage'dan tüm veriyi sil
+    setTodos([]);
+    localStorage.removeItem("todos");
   };
 
   // Todo güncelleme fonksiyonu
@@ -47,16 +47,16 @@ function App() {
       return;
     }
     const newTodos = [...todos];
-    newTodos[index] = editValue; // Todo'yu yeni değerle güncelle
-    setTodos(newTodos); // State'i güncelle
-    setIsEditing(null); // Düzenleme modundan çık
-    setEditValue(""); // Input'u temizle
-    localStorage.setItem("todos", JSON.stringify(newTodos)); // LocalStorage'ı güncelle
+    newTodos[index] = editValue;
+    setTodos(newTodos);
+    setIsEditing(null);
+    setEditValue("");
+    localStorage.setItem("todos", JSON.stringify(newTodos));
   };
 
   // Arama filtresi
-  const filteredTodos = todos.filter(
-    (t) => t.toLowerCase().includes(search.toLowerCase()) // Arama terimine göre todo'ları filtrele
+  const filteredTodos = todos.filter((t) =>
+    t.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -74,7 +74,7 @@ function App() {
             className="form-control"
             placeholder="Yeni bir todo ekleyin..."
             value={todo}
-            onChange={(e) => setTodo(e.target.value)} // Input değeri değiştiğinde state'i güncelle
+            onChange={(e) => setTodo(e.target.value)}
           />
           <button className="btn btn-primary mt-2 w-100" onClick={addTodo}>
             Todo Ekle
@@ -88,7 +88,7 @@ function App() {
             className="form-control"
             placeholder="Todoları ara..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)} // Arama değeri değiştiğinde state'i güncelle
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
@@ -99,14 +99,14 @@ function App() {
               key={index}
               className="list-group-item d-flex justify-content-between align-items-center"
             >
-              {/* Eğer düzenleme modundaysak, düzenleme inputu göster */}
+              {/* Eğer düzenleme modundaysak, düzenleme inputu ve kaydet butonu göster */}
               {isEditing === index ? (
-                <div className="d-flex w-100">
+                <div className="d-flex w-100 align-items-center">
                   <input
                     type="text"
                     className="form-control"
                     value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)} // Düzenlenen değeri güncelle
+                    onChange={(e) => setEditValue(e.target.value)}
                     onBlur={() => updateTodo(index)} // Input dışına tıklandığında güncellenir
                   />
                   <button
@@ -120,29 +120,31 @@ function App() {
                 <span>{t}</span> // Düzenleme modunda değilse, sadece todo metnini göster
               )}
 
-              {/* Silme ve Düzenleme ikonlarını grupla */}
-              <div>
-                {/* Silme ikonu */}
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => deleteTodo(index)} // Silme butonuna tıklayınca todo silinir
-                  style={{ marginRight: "5px" }} // Silme ve düzenleme arasına 5px boşluk
-                >
-                  Sil
-                </button>
+              {/* Düzenleme ve Silme butonları, sadece düzenleme modunda değilse gösterilecek */}
+              {isEditing !== index && (
+                <div className="ml-2">
+                  {/* Silme ikonu */}
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => deleteTodo(index)}
+                    style={{ marginRight: "5px" }}
+                  >
+                    Sil
+                  </button>
 
-                {/* Düzenleme ikonu */}
-                <button
-                  className="btn btn-info btn-sm"
-                  onClick={() => {
-                    setIsEditing(index); // Düzenleme moduna geç
-                    setEditValue(t); // Güncellenen todo'yu input'a yerleştir
-                  }}
-                  style={{ marginRight: "5px" }} // Silme ve düzenleme arasına 5px boşluk
-                >
-                  Düzenle
-                </button>
-              </div>
+                  {/* Düzenleme ikonu */}
+                  <button
+                    className="btn btn-info btn-sm"
+                    onClick={() => {
+                      setIsEditing(index); // Düzenleme moduna geç
+                      setEditValue(t); // Güncellenen todo'yu input'a yerleştir
+                    }}
+                    style={{ marginRight: "5px" }}
+                  >
+                    Düzenle
+                  </button>
+                </div>
+              )}
             </li>
           ))}
         </ul>
